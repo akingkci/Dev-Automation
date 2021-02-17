@@ -13,7 +13,7 @@ This repository presents multiple examples of integrating accessibility into var
 
   * ***Axe core***
     * Basic examples
-        1. [Browser extensions](/Dev-Automation/tree/master/examples/axe-core/axe-basic-browser-ext)
+        1. [Browser extensions](/examples/axe-core/axe-basic-browser-ext)
         2. [Command line interface (CLI)](https://github.com/Section508Coordinators/Dev-Automation/tree/master/examples/axe-core/axe-basic-cli)
         3. [Scripting](https://github.com/Section508Coordinators/Dev-Automation/tree/master/examples/axe-core/axe-basic-scripts)
     * Advanced examples
