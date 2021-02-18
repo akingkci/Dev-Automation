@@ -7,7 +7,7 @@ Go to the [GitHub Playbook-Automation published page](https://section508coordina
 <hr>
 
 ## Overview
-This repository presents multiple examples of integrating accessibility into various levels of test automation via different test strategies and using various open source vendor tools.
+This repository presents multiple examples of integrating accessibility into various levels of test automation via different test strategies and using various open source vendor tools. T1
 
 ### Automated Accessibility Testing Vendors / Tools
 
