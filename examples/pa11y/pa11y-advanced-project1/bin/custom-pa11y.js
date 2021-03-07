@@ -7,6 +7,7 @@ const globby = require('globby');
 const protocolify = require('protocolify');
 const pkg = require('../package.json');
 const commander = require('commander');
+const { addLoggingInfo, addLoggingError } = require('../utils/winston');
 
 commander
 	.version(pkg.version)
@@ -43,6 +44,16 @@ commander
 		'permit this number of errors, warnings, or notices, otherwise fail with exit code 2',
 		'0'
 	)
+	.option(
+		'-c, --config <string>',
+		'Use an alternate configuration for this analysis',
+		'config/custom-pa11y.config.js'
+ 	)
+	.option(
+		'-t, --template <string>',
+		'Use an alternate template for this analysis',
+		'config/index.handlebars'
+	)
 	.parse(process.argv);
 
 // Parse the args into valid paths using glob and protocolify
@@ -51,42 +62,23 @@ const urls = globby.sync(commander.args, {
 	nonull: true
 }).map(protocolify);
 
+addLoggingInfo('Starting script');
 
-const config = {
-	urls: [
+const configPath = `../${commander.opts().config}`;
 
-		// Hard-code URLs for testing here
-		"https://www.hhs.gov/az/a/index.html",
-		"https://www.hhs.gov/about/index.html",
-		"https://www.hhs.gov/programs/index.html",
-		"https://www.hhs.gov/regulations/index.html",
-		"https://www.hhs.gov/about/news/coronavirus/index.html",
-		"https://www.hhs.gov/opioids/",
-		"https://www.hhs.gov/surgeongeneral/reports-and-publications/tobacco/index.html",
-		"https://www.hhs.gov/healthcare/index.html",
-		"https://www.hhs.gov/grants/index.html",
-		"https://www.hhs.gov/health.gov/our-work/physical-activity"
-	],
+addLoggingInfo('Getting configurion');
 
-	defaults: {
-		log: (commander.json || commander.htmlReport) ? undefined : console,
-		wrapWidth: process.stdout.columns || undefined,
-		timeout: 120000,
-		concurrency: 20,
-		standard: 'WCAG2AA', // Section508, WCAG2A, WCAG2AA (default), WCAG2AAA
+const config = require(configPath);
 
-		ignore: [
+addLoggingInfo('Getting template');
 
-			], 
-		runners: [
-			'htmlcs'
-		]
-	}
-};
-
+const templateCustom = commander.opts().template;
 
 (async () => {
 	// Load a sitemap based on the `--sitemap` flag
+
+	addLoggingInfo('Loading sitemap into config');
+
 	const newConfig = commander.sitemap ?
 		await customPa11y.loadSitemapIntoConfig(commander, config) : config;
 
@@ -94,10 +86,20 @@ const config = {
 	let allUrls = (newConfig.urls || []).concat(urls);
 
 	// Run pa11yCi
-	const report = await pa11yCi(allUrls, newConfig.defaults);
+	addLoggingInfo('Running pa11yCi...');
+	let runningStatus = null;
+	let report = null;
+	try {
+		runningStatus = setInterval(() => addLoggingInfo('...still working...'), 10000)
+		report = await pa11yCi(allUrls, newConfig.defaults)
+	} finally {
+		clearInterval(runningStatus);
+	}
+	addLoggingInfo('...pa11yCi completed scanning all URLs');
 
 	if (commander.htmlReport) {
-		await customPa11y.generateHtmlReports(report, commander.htmlReport, commander);
+		addLoggingInfo('Generating Html reports');
+		await customPa11y.generateHtmlReports(report, commander.htmlReport, commander, templateCustom);
 	}
 
 	// Output JSON if asked for it
@@ -111,15 +113,17 @@ const config = {
 			return value;
 		}));
 	}
-
+	addLoggingInfo('Completed script');
 	if (report.errors >= parseInt(commander.threshold, 10) && report.passes < report.total) {
 		process.exit(2);
 	} else {
 		process.exit(0);
 	}
 
-})().catch(error => {
-	console.error('unexpected failure: ');
-	console.error(error);
-	process.exit(1);
-});
+})()	
+	.catch(error => {
+		console.error('unexpected failure: ');
+		console.error(error);
+		addLoggingError(`Error script not completed, unexpected failure: ${error}`);
+		process.exit(1);
+	});
