@@ -26,7 +26,7 @@ By combining the axe-core API library with the underlying [Pa11y test engine](ht
 
 This tool allows the user to pick and choose the individual, underlying rules for testing. Not all automated tool rulesets on the market perfectly align with the pass/fail success criteria as expressed by the DHS standard. However upon analysis, DHS OAST has identified specific rules, for specific vendor accessibility ruleset libraries, that provide value in identifying accessibility to the DHS Standard.
 
-Those analyses of vendor accessibility rulesets and the OAST ruleset recommendations reside in rulesets folder (/rulesets) on this site.
+Those analyses of vendor accessibility rulesets and the OAST ruleset recommendations reside in [rulesets folder](/rulesets) on this site.
 
 ---
 
@@ -76,34 +76,85 @@ Options:
                                    pa11y-ci-reporter-html to generate a report
                                    in <dir>
   -h, --help                       display help for command
+  -c, --config <string>            Use an alternate configuration for this analysis,
+                                   default file: config/custom-axe.config.js
+	-t, --template <string>          Use an alternate template for this analysis,
+                                   default file: config/index.handlebars
 ```
 
 ### Example implementation of switches
 
 In a git bash window, run the following command from the /bin/ directory:
 
-`node custom-axe -s https://section508coordinators.github.io/Dev-Automation/sitemaps/test-sitemap.xml -h HTML_Report -x '.*(pdf|jpg|png)$'`
+`node custom-axe.js --config config/custom-axe.config.js --template config/index.handlebars -h HTML_Report https://www.saga-it.com`
 
-This will run an accessibility test against a site map file of a small number of URLs, using the default axe-core rules, and create a folder with the name "***HTML_Report***" within the  "\bin\\" folder. Opening the index.html of that report will present you with test results and scoring.
+This will run an accessibility test against a test web site of multiple web pages, with the configuration that is set with the **--config** option and using the template that is set with the **--template** option a folder will be created with the name "***HTML_Report***". Inside that folder will be index.html file of that report, it will display the test results and the score.
 
 ## Pre-configured examples
 
-The /bin/ directory contains multiple "custom-axe" files that showcase different functionality and features via their configuration settings as shown below. 
+The /config/ directory contains multiple files with different configurations in each file, which show different features through their configuration settings as follows. Use the **--config** option to select any .js file found inside the /config/ directory:
 
-Instances where the syntax calls for a sitemap.xml file containing URLs to test, you can use the test sitemap file below in the syntax example, or point to your own sitemap.xml file:
+- **Run all axe rules when testing**: 01-custom-axe.js.
 
-- **Script: 01-custom-axe.js**
-  - <u>Description</u>: Executes tests against internally "hard coded" URLs within the script file and runs all default axe-core rules
-  - <u>Syntax</u>:  `node 01-custom-axe.js -h <HTML_report_name>`
-- **Script: 02-custom-axe.js**
-  - <u>Description:</u>  Executes tests against internally "hard coded" URLs within the script file and only tests against preferred rules that are Trusted Tester friendly
-  - <u>Syntax</u>: `node 02-custom-axe.js -h <HTML_report_name>`
-- **Script: 03-custom-axe.js**
-  - <u>Description</u>: Executes tests against URLs in a sitemap file and runs all default axe-core rules. You must provide a pointer to a sitemap file or use the test sitemap file in the syntax example.
-  - <u>Syntax</u>: `node 03-custom-axe -s https://section508coordinators.github.io/Dev-Automation/sitemaps/test-sitemap.xml -h 03-HTML_Report -x '.*(pdf|jpg|png)$' `
-- **Script: 04-custom-axe.js**
-  - <u>Description</u>: Executes tests against URLs in a sitemap file and runs only preferred axe-core rules that are Trusted tester friendly. You must provide a pointer to a sitemap file or use the test sitemap file in the syntax example.
-  - <u>Syntax</u>: `node 04-custom-axe -s https://section508coordinators.github.io/Dev-Automation/sitemaps/test-sitemap.xml -h 04-HTML_Report -x '.*(pdf|jpg|png)$'`
+- **Run only certain rules that are TTv5 friendly**: 02-custom-axe.js
+
+## The syntax of the config files
+
+- **Urls**: urls can be a string or a function, functions would use in case the url needs authentication, functions take a browser puppeteer that can be used to perform certain actions before returning the url to run against axe.
+
+  Login function example:
+
+  ```
+    async (puppet) => {
+	    // log into site before running tests and push the post login page onto
+		  const page = await puppet.newPage();
+		  await page.goto('http://testing-ground.scraping.pro/login');
+		  await page.waitForSelector('#usr', {visible: true});
+
+		  // Fill in and submit login form.
+		  const emailInput = await page.$('#usr');
+		  await emailInput.type('admin');
+		  const passwordInput = await page.$('#pwd');
+		  await passwordInput.type('12345');
+		  const submitButton = await page.$('input[type=submit]');
+
+	    await Promise.all([
+		    submitButton.click(),
+		    page.waitForNavigation(),
+		  ]);
+
+		  if (page.url() != 'http://testing-ground.scraping.pro/login?mode=welcome') {
+		    console.error('login failed!');
+		  } else {
+		    console.log('login succeeded');
+		    const cookies = await page.cookies();
+		    for (var key in cookies) {
+		      console.log(`found cookie ${cookies[key].name}`);
+		    }
+		  }
+		  await page.close();
+
+		  return 'http://testing-ground.scraping.pro/login?mode=welcome';
+		},
+  ```
+
+- **axeConfig**: inside the axeConfig object the configuration is set up.
+
+    - **tags**: tags can be used to select groups of tests.
+
+    - **checks**: can define new checks or override existing.
+
+    - **disableOtherRules**: if true, only use our rules.
+
+    - **rules**: define new rules or override existing. 
+
+## Configure the handlebars templates
+
+to modify any title, is to search inside the template and change the text
+
+to hide the table, go to the **style** tag and look for the **table** styles and add **display: none**.
+
+to hide the chart, you must comment out the script tag and comment out the tag containing the id accessibilityChart.
 
 <hr>
 
@@ -113,6 +164,6 @@ More comprehensive guidance on the axe-core engine can be found in the [Axe Java
 
 ---
 
-03/02/2021 | 05:01p
+02/20/2021 | 07:09p
 
 
