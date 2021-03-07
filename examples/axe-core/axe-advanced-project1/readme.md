@@ -78,7 +78,7 @@ Options:
   -h, --help                       display help for command
   -c, --config <string>            Use an alternate configuration for this analysis,
                                    default file: config/custom-axe.config.js
-	-t, --template <string>          Use an alternate template for this analysis,
+  -t, --template <string>          Use an alternate template for this analysis,
                                    default file: config/index.handlebars
 ```
 
@@ -164,6 +164,6 @@ More comprehensive guidance on the axe-core engine can be found in the [Axe Java
 
 ---
 
-02/20/2021 | 07:09p
+03/06/2021 | 09:46p
 
 
