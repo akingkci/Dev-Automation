@@ -1,10 +1,10 @@
 # axe-core advanced examples: Project 1
 
-<hr>
+---
 
 Go to the [GitHub Playbook-Automation published page](https://section508coordinators.github.io/Dev-Automation/)
 
-<hr>
+---
 
 
 # Tool: Custom extended functionality
@@ -14,13 +14,11 @@ This project is meant to demonstrate one of multiple ways in which developers ca
 By combining the axe-core API library with the underlying [Pa11y test engine](https://github.com/pa11y/pa11y), this example broadens the possibilities when performing accessibility testing and reporting to maximize effectiveness. These features include:
 
 - **URL Scanning**: Using the "URLs:" option, cite the identity and number of URLs to test against from within the script itself or use the sitemap switch (-s)  to use a sitemap.xml file of URLs to test against.
-- **Accessibility Standards**: Using the "standard:" option, indicate which accessibility standard rules to use for testing.
-- **Ruleset**: Using the "runners:" option, indicate which vendor ruleset you wish to use. Pa11y allows you to select one or combine multiple rulesets. Pa11y currently supports axe-core, HTML CodeSniffer, and custom rulesets created to match the Pa11y engine requirements.
-- **Individual rule selection**: By default, pa11y will use all rules in an identified ruleset for testing. If you don't want Pa11y to use all rules but rather use a subset of preferred rules, you do this by citing which rules you want pa11y to ***ignore***.  You do this in Pa11y by using the "ignore:" configuration option. 
+- **Individual rule selection**: Using the "rules:" option, enable or disable the underlying rules you want to use for testing. 
 
-- **HTML Reporting/Scoring**: Examples of extending the simple HTML report offered by the open source tool to provide a simple scoring model for mass scan results. This is done by using the HTML report switch (-h).
+- **HTML Reporting/Scoring**: Using the HTML report switch (-h), this example provides summaries of rules that fail accessibility and  a simple scoring model for mass scan results. 
 
-<hr>
+---
 
 ## Automated tools and rulesets
 
@@ -28,9 +26,9 @@ By combining the axe-core API library with the underlying [Pa11y test engine](ht
 
 This tool allows the user to pick and choose the individual, underlying rules for testing. Not all automated tool rulesets on the market perfectly align with the pass/fail success criteria as expressed by the DHS standard. However upon analysis, DHS OAST has identified specific rules, for specific vendor accessibility ruleset libraries, that provide value in identifying accessibility to the DHS Standard.
 
-Those analyses of vendor accessibility rulesets and the OAST ruleset recommendations reside in the following folder on this site: https://github.com/Section508Coordinators/Dev-Automation/tree/master/rulesets.
+Those analyses of vendor accessibility rulesets and the OAST ruleset recommendations reside in rulesets folder (/rulesets) on this site.
 
-<hr>
+---
 
 ## Technology requirements
 
@@ -84,16 +82,28 @@ Options:
 
 In a git bash window, run the following command from the /bin/ directory:
 
-`node custom-axe.js -s http://coc.kciprojects.com/xml/kci-sitemap.xml -h --HTML_axe-Report -x '.*(pdf|jpg|png)$'`
+`node custom-axe -s https://section508coordinators.github.io/Dev-Automation/sitemaps/test-sitemap.xml -h HTML_Report -x '.*(pdf|jpg|png)$'`
 
-This will run an accessibility test against a test web site of multiple web pages and create a folder with the name "***--HTML_Report***" within the  "\bin\\" folder. Opening the index.html of that report will present you with test results and scoring.
+This will run an accessibility test against a site map file of a small number of URLs, using the default axe-core rules, and create a folder with the name "***HTML_Report***" within the  "\bin\\" folder. Opening the index.html of that report will present you with test results and scoring.
 
 ## Pre-configured examples
 
-The /bin/ directory contains multiple "custom-axe" files that showcase different features via their configuration settings as follows. Use any desired combinations of switch commands on the base .js files below:
+The /bin/ directory contains multiple "custom-axe" files that showcase different functionality and features via their configuration settings as shown below. 
 
-- **Execute all axe rules when testing**: `01-custom-axe.js`
-- **Execute only certain rules that are TTv5 friendly**: `02-custom-axe.js`
+Instances where the syntax calls for a sitemap.xml file containing URLs to test, you can use the test sitemap file below in the syntax example, or point to your own sitemap.xml file:
+
+- **Script: 01-custom-axe.js**
+  - <u>Description</u>: Executes tests against internally "hard coded" URLs within the script file and runs all default axe-core rules
+  - <u>Syntax</u>:  `node 01-custom-axe.js -h <HTML_report_name>`
+- **Script: 02-custom-axe.js**
+  - <u>Description:</u>  Executes tests against internally "hard coded" URLs within the script file and only tests against preferred rules that are Trusted Tester friendly
+  - <u>Syntax</u>: `node 02-custom-axe.js -h <HTML_report_name>`
+- **Script: 03-custom-axe.js**
+  - <u>Description</u>: Executes tests against URLs in a sitemap file and runs all default axe-core rules. You must provide a pointer to a sitemap file or use the test sitemap file in the syntax example.
+  - <u>Syntax</u>: `node 03-custom-axe -s https://section508coordinators.github.io/Dev-Automation/sitemaps/test-sitemap.xml -h 03-HTML_Report -x '.*(pdf|jpg|png)$' `
+- **Script: 04-custom-axe.js**
+  - <u>Description</u>: Executes tests against URLs in a sitemap file and runs only preferred axe-core rules that are Trusted tester friendly. You must provide a pointer to a sitemap file or use the test sitemap file in the syntax example.
+  - <u>Syntax</u>: `node 04-custom-axe -s https://section508coordinators.github.io/Dev-Automation/sitemaps/test-sitemap.xml -h 04-HTML_Report -x '.*(pdf|jpg|png)$'`
 
 <hr>
 
@@ -101,8 +111,8 @@ The /bin/ directory contains multiple "custom-axe" files that showcase different
 
 More comprehensive guidance on the axe-core engine can be found in the [Axe JavaScript Accessibility API](https://github.com/dequelabs/axe-core/blob/develop/doc/API.md). 
 
-<hr>
+---
 
-01/30/2021 | 09:33p
+03/02/2021 | 05:01p
 
 

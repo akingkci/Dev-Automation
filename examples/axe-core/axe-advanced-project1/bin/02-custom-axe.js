@@ -2,10 +2,11 @@
 'use strict';
 
 //
-//*** THIS VERSION TESTS ONLY AGAINST RULES BELOW (STARTING WITH LINE 129) 
-//    THAT HAVE A SETTING OF "enabled: true" 
+// 02/21/2021 axe
+// 02-custom-axe.js
+// Executes tests against internally "hard coded" URLs within the script file 
+// and only tests against preferred rules that are Trusted Tester friendly
 //
-
 
 const customAxe = require('..');
 const pkg = require('../package.json');
@@ -45,95 +46,26 @@ let commandLineUrls = globby.sync(commander.args, {nonull: true}).map(protocolif
 
 const config = {
 	urls: [
-		// // First url requires login. The concept here is that a 'url' in this
-		// // list can either be a string url or a function that takes a
-		// // puppeteer browser that can be used to perform some actions before
-		// // returning the actual URL to run lighthouse against.
-		// async (puppet) => {
-		// 	// log into site before running tests and push the post login page onto
-		// 	const page = await puppet.newPage();
-		// 	await page.goto('http://testing-ground.scraping.pro/login');
-		// 	await page.waitForSelector('#usr', {visible: true});
 
-		// 	// Fill in and submit login form.
-		// 	const emailInput = await page.$('#usr');
-		// 	await emailInput.type('admin');
-		// 	const passwordInput = await page.$('#pwd');
-		// 	await passwordInput.type('12345');
-		// 	const submitButton = await page.$('input[type=submit]');
+		// Hard-code URLs for testing here
 
-		// 	await Promise.all([
-		// 		submitButton.click(),
-		// 		page.waitForNavigation(),
-		// 	]);
-
-		// 	if (page.url() != 'http://testing-ground.scraping.pro/login?mode=welcome') {
-		// 		console.error('login failed!');
-		// 	} else {
-		// 		console.log('login succeeded');
-		// 		const cookies = await page.cookies();
-		// 		for (var key in cookies) {
-		// 			console.log(`found cookie ${cookies[key].name}`);
-		// 		}
-		// 	}
-		// 	await page.close();
-
-		// 	return 'http://testing-ground.scraping.pro/login?mode=welcome';
-		// },
-		// 'http://testing-ground.scraping.pro/table',
-		// 'http://testing-ground.scraping.pro/blocks',
-		// 'http://testing-ground.scraping.pro/textlist',
-		// 'http://testing-ground.scraping.pro/invalid'
-	],
+		"https://section508coordinators.github.io/BaselineTestPages2/test-cases/TC1005C001.html",
+		"https://section508coordinators.github.io/BaselineTestPages2/test-cases/TC1005C002.html",
+		"https://section508coordinators.github.io/BaselineTestPages2/test-cases/TC1005C003.html",
+		"https://section508coordinators.github.io/BaselineTestPages2/test-cases/TC1005C004.html",
+		"https://section508coordinators.github.io/BaselineTestPages2/test-cases/TC1005C007.html"
+		],
+		
 	axeConfig: {
-		// branding: {
-		// 	brand: '';
-		// 	application: '';
-		// },
-		// reporter: ReporterVersion,
-		/////////////////////////////// tags can be used to select groups of tests
-		// tags: [
-		// 	"best-practice",
-		// 	"cat.keyboard",
-		// 	"cat.time-and-media",
-		// 	"wcag2a",
-		// 	"wcag121",
-		// 	"section508",
-		// 	"section508.22.a"
-		// ],
-		//////////////////////////// can define new checks or override existing
-		// checks: [
-		// 	// {
-		// 	// 	id: '',
-		// 	// 	// evaluate: Function | string;
-		// 	// 	// after?: Function | string;
-		// 	// 	// options?: any;
-		// 	// 	// matches: '',
-		// 	// 	enabled: true,
-		// 	// }
-		// ],
-		// disableOtherRules: true,     //////// if true, only use our rules
-		////////////////////////////// define new rules or override existing
-		 rules: [
-		 //{
-		// 	// 	id: '',
-		// 	// 	// selector: string;
-		// 	// 	// excludeHidden?: boolean;
-		// 	// 	// enabled?: boolean;
-		// 	// 	// pageLevel?: boolean;
-		// 	// 	// any?: string[];
-		// 	// 	// all?: string[];
-		// 	// 	// none?: string[];
-		// 	// 	// tags: string[];
-		// 	// 	// matches: string;
-		//}
 
+		 rules: [
 
 		 	//********************************************
 		 	//*** START OF TTv5-Friendly and verified ****
 		 	//********************************************
 			
 			{id: 'aria-allowed-role', enabled: true},
+			{id: 'aria-valid-attr-value', enabled: true},
 			{id: 'aria-hidden-focus', enabled: true},
 			{id: 'aria-input-field-name', enabled: true},
 			{id: 'aria-toggle-field-name', enabled: true},
@@ -203,6 +135,7 @@ const config = {
 		 	{id: 'landmark-main-is-top-level', enabled: false},
 		 	{id: 'landmark-no-duplicate-banner', enabled: false},
 		 	{id: 'landmark-no-duplicate-contentinfo', enabled: false},
+		 	{id: 'landmark-no-duplicate-main', enabled: false},
 		 	{id: 'landmark-one-main', enabled: false},
 		 	{id: 'landmark-unique', enabled: false},
 		 	{id: 'layout-table', enabled: false},

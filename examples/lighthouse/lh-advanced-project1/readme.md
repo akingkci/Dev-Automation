@@ -1,10 +1,10 @@
 # lighthouse advanced examples: Project 1
 
-<hr>
+---
 
 Go to the [GitHub Playbook-Automation published page](https://section508coordinators.github.io/Dev-Automation/)
 
-<hr>
+---
 
 
 # lighthouse: Customizing functionality
@@ -12,10 +12,10 @@ Go to the [GitHub Playbook-Automation published page](https://section508coordina
 This project is meant to demonstrate multiple ways in which developers can use and combine various lighthouse test engine functionality using different configurations as follows:
 
 - **URL Scanning**: Using the "URLs:" option, cite the identity and number of URLs to test against from within the script itself or use the sitemap switch (-s)  to use a sitemap.xml file of URLs to test against.
-- **Individual rule selection**: The underlying ruleset used by lighthouse is the Deque axe-core ruleset.  If you don't want to use all axe-core rules usually used by lighthouse but would rather use a subset of preferred rules, you do this by using the "onlyAudits:" configuration option and then cite the rules to be used.
-- **HTML Reporting/Scoring**: Examples of writing test results to the command window or an HTML report. Also, extending the simple HTML report offered by the open source tool to provide a basic scoring model for mass scan results. This is done by using the HTML report switch (-h).
+- **Individual rule selection**: The underlying ruleset used by lighthouse is the Deque axe-core ruleset.  If you don't want to use all axe-core rules usually used by lighthouse but would rather use a subset of preferred rules, you do this by using the "skipAudits:" configuration option to exclude the rule(s) to be used.
+- **HTML Reporting/Scoring**: using the HTML report switch (-h), this example provides summaries of rules that fail accessibility and  a simple scoring model for mass scan results. 
 
-<hr>
+---
 
 ## Automated tools and rulesets
 
@@ -24,10 +24,22 @@ This project is meant to demonstrate multiple ways in which developers can use a
 
 This tool allows the user to pick and choose the individual, underlying rules for testing. Not all automated tool rulesets on the market perfectly align with the pass/fail success criteria as expressed by the DHS standard. However upon analysis, DHS OAST has identified specific rules, for specific vendor accessibility ruleset libraries, that provide value in identifying accessibility to the DHS Standard.
 
-Those analyses of vendor accessibility rulesets and the OAST ruleset recommendations reside in the following folder on this site: https://github.com/Section508Coordinators/Dev-Automation/tree/master/rulesets.
+Those analyses of vendor accessibility rulesets and the OAST ruleset recommendations reside in rulesets folder (/rulesets) on this site.
 
-<hr>
+#### Lighthouse and axe-core rulesets
 
+Note that Deque axe-core open-source rules are the underlying rules for lighthouse accessibility testing, however the scope of rules exposed with lighthouse testing do not match the full range of axe-core rules as exposed through the full axe-core API. 
+
+##### Review axe-core rules tested with Lighthouse
+
+To see the axe-core rules exposed via Lighthouse testing:
+
+- Issue the command: `lighthouse --list-all-audits` and then note all listings with a preface of "**accessibility/**".
+- Reference the Lighthouse section of the rulesets folder on this site for a listing of those rules.
+
+To access the full range of axe-core rules, use the the axe-core test tools on this site.
+
+---
 
 ## Technology requirements
 
@@ -48,7 +60,6 @@ This example uses the following technology stack:
 - typescript
 
 
-
 ---
 
 ## Setup
@@ -56,7 +67,8 @@ This example uses the following technology stack:
 Git and Node.js needs to be available on your system. 
 
 ```sh
-npm -g install
+npm install
+npm install puppeteer --no-save
 ```
 
 
@@ -86,31 +98,36 @@ Options:
 
 In a git bash window, run the following command from the /bin/ directory:
 
-`node custom-lighthouse.js -s http://coc.kciprojects.com/xml/kci2-sitemap.xml -h --HTML_LH-Report -x '.*(pdf|jpg|png)$'`
+`node custom-lighthouse.js -s https://section508coordinators.github.io/Dev-Automation/sitemaps/test-sitemap.xml -h HTML_LH-Report -x '.*(pdf|jpg|png)$'`
 
-This will run an accessibility test against a test web site of multiple web pages and create a folder with the name "***--HTML_LH-Report***" within the  "\bin\\" folder. Opening the index.html of that report will present you with test results and scoring.
+This will run an accessibility test against a test web site of multiple web pages and create a folder with the name "***HTML_LH-Report***" within the  "\bin\\" folder. Opening the index.html of that report will present you with test results and scoring.
 
 ## Pre-configured examples
 
-The /bin/ directory contains multiple "custom-lighthouse" files that showcase different features via their configuration settings as follows:
+The "\bin\\" directory contains multiple "custom-lighthouse" script files that showcase different functionality and features via their configuration settings as shown below. 
 
-- **Script 1 (01-custom-lighthouse.js)**: 
-  Use the following syntax for this script:`node 01-custom-lighthouse.js -h --HTML_LH-Report -x '.*(pdf|jpg|png)$'`This script presents the following:
-  - Uses the "urls:" option and tests against 5 URLs that are hard-coded inside the script, as opposed to pointing to a sitemap file.
-  - Does not constrain rules and therefore runs against all axe-core rules lighthouse runs by default.
-- **Script 2 (02-custom-lighthouse.js):** 
-  Use the following syntax for this script:`node 02-custom-lighthouse.js -s http://coc.kciprojects.com/xml/kci2-sitemap.xml -h --HTML_LH-Report -x '.*(pdf|jpg|png)$'`This script presents the following:
-  - Uses the "runners:" option to specify the axe-core ruleset to use for testing. No rules are ignored, so testing is done using the full range of rules.
-  - Uses the "-s" switch to override the hard coded URLs within the script and rather use a sitemap.xml file to  specify the URLs to test with.
-  - Instead of using all axe-core rules, uses the "onlyAudits:" option to specify rules to use for testing
+Instances where the syntax calls for a sitemap.xml file containing URLs to test, you can use the test sitemap file below in the syntax example, or point to your own sitemap.xml file:
 
-<hr>
+- **Script: 01-custom-lighthouse.js**
+  - <u>Description</u>: Executes tests against internally "hard coded" URLs within the script file and runs all default lighthouse (axe-core) rules
+  - <u>Syntax</u>:  `node 01-custom-lighthouse.js -h <HTML_report_name>`
+- **Script: 02-custom-lighthouse.js**
+  - <u>Description:</u>  Executes tests against internally "hard coded" URLs within the script file and only tests against preferred rules that are Trusted Tester friendly
+  - <u>Syntax</u>: `node 02-custom-lighthouse.js -h <HTML_report_name>`
+- **Script: 03-custom-lighthouse.js**
+  - <u>Description</u>: Executes tests against URLs in a sitemap file and runs all default lighthouse (axe-core) rules. You must provide a pointer to a sitemap file or use the test sitemap file in the syntax example.
+  - <u>Syntax</u>: `node 03-custom-lighthouse -s https://section508coordinators.github.io/Dev-Automation/sitemaps/test-sitemap.xml -h <HTML_report_name> -x '.*(pdf|jpg|png)$' `
+- **Script: 04-custom-lighthouse.js**
+  - <u>Description</u>: Executes tests against URLs in a sitemap file and runs only preferred lighthouse (axe-core) rules that are Trusted Tester friendly. You must provide a pointer to a sitemap file or use the test sitemap file in the syntax example.
+  - <u>Syntax</u>: `node 04-custom-lighthouse -s https://section508coordinators.github.io/Dev-Automation/sitemaps/test-sitemap.xml -h <HTML_report_name> -x '.*(pdf|jpg|png)$'`
+
+---
 
 # More information
 
 For more information on lighthouse syntax, go here: https://github.com/GoogleChrome/lighthouse.
 
-<hr>
+---
 
-02/15/2021 | 03:58p
+03/02/2021 | 05:04p
 

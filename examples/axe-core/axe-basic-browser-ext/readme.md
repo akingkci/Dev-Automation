@@ -1,10 +1,10 @@
 # axe-core basic examples: Browser extension
 
-<hr>
+---
 
 Go to the [GitHub Playbook-Automation published page](https://section508coordinators.github.io/Dev-Automation/)
 
-<hr>
+---
 
 ## axe browser extensions
 
@@ -12,7 +12,15 @@ The Axe web browser extension tool is a free tool from Deque Systems that offers
 
 The tool currently integrates with Chrome, Firefox, and Edge with extended features being available via the Chrome extension.
 
-<hr>
+**Note:** Deque also offers an upgrade to an axe beta extension tool. In addition to automated testing, this tools adds additional capabilities such as:
+
+- Intelligent Guided Testing
+- Ability to test a part of a page
+- Ability to save & export results
+
+This upgrade requires registration. You can find out more about this version [at the Deque web site](https://www.deque.com/axe/beta/?utm_source=dequeuniversity&utm_medium=referral&utm_campaign=axebeta_domore).
+
+---
 
 ## Technology stack
 
@@ -36,6 +44,13 @@ Setup is described via the appropriate browser's "store" at the following locati
 
 See individual browser extension.
 
-<hr>
+## More information
 
-01/30/2021 | 02:52p
+See below for more information and basic usage:
+
+- Overview: https://www.youtube.com/watch?v=owBCWftVB7E&feature=youtu.be
+- Getting started: https://www.youtube.com/watch?reload=9&v=FtVLATTZU78&feature=youtu.be 
+
+---
+
+02/21/2021 | 05:26a

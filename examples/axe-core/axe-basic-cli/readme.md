@@ -1,10 +1,10 @@
 # axe-core basic examples: CLI
 
-<hr>
+---
 
 Go to the [GitHub Playbook-Automation published page](https://section508coordinators.github.io/Dev-Automation/)
 
-<hr>
+---
 
 ## Tool: @axe-core/cli
 
@@ -12,7 +12,7 @@ The  @axe-core/cli tool provides the tester with a command line interface for ax
 
 This folder presents fully functioning examples of how to use the @axe-core/cli tool for quick and easy accessibility testing.
 
-<hr>
+---
 
 ## Automated tools and rulesets
 
@@ -20,9 +20,9 @@ This folder presents fully functioning examples of how to use the @axe-core/cli 
 
 This tool allows the user to pick and choose the individual, underlying rules for testing. Not all automated tool rulesets on the market perfectly align with the pass/fail success criteria as expressed by the DHS standard. However upon analysis, DHS OAST has identified specific rules, for specific vendor accessibility ruleset libraries, that provide value in identifying accessibility to the DHS Standard.
 
-Those analyses of vendor accessibility rulesets and the OAST ruleset recommendations reside in the following folder on this site: https://github.com/Section508Coordinators/Dev-Automation/tree/master/rulesets.
+Those analyses of vendor accessibility rulesets and the OAST ruleset recommendations reside in rulesets folder (/rulesets) on this site.
 
-<hr>
+---
 
 ## Technology requirements
 
@@ -129,9 +129,7 @@ Command: `axe https://section508coordinators.github.io/BaselineTestPages2/test-c
 
 ![Example 1](ex1.png)
 
-
-
-<hr>
+---
 
 #### Example 2
 
@@ -143,9 +141,8 @@ Command: `axe https://section508coordinators.github.io/BaselineTestPages2/test-c
 
 ![Example 2](ex2.png)
 
+---
 
-
-<hr>
 
 #### Example 3
 
@@ -164,7 +161,7 @@ Command: `axe https://section508coordinators.github.io/BaselineTestPages2/test-c
 1. Always be aware of the currently published version of the axe-core library. If you want to run with the most current version – which will likely have you up to date on the latest rules and bug fixes, be sure to periodically update your copy of the library and note the axe-core version message when running CLI, e.g. “`Running axe-core <library version> in <selected browser>`”
 2. Be wary of using the --tags option. Results obtained by OAST through testing are questionable. OAST has recommended testing using individual rules in favor of using tags.
 
-<hr>
+---
 
 ## Appendix
 
@@ -181,13 +178,12 @@ Command: `axe https://section508coordinators.github.io/BaselineTestPages2/test-c
 | experimental  | Cutting-edge techniques                     |
 | cat           | Category mappings used by Deque (see below) |
 
- <hr>
 
 ## More information
 
 More information on the axe-core CLI can be found here: https://github.com/dequelabs/axe-core-npm/tree/develop/packages/cli.
 
-<hr>
+---
 
-02/01/2021 | 01:25p
+03/02/2021 | 05:02p
 

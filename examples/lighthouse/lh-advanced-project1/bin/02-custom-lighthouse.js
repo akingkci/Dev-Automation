@@ -1,6 +1,18 @@
 #!/usr/bin/env node
 'use strict';
 
+//
+//02/20/2021
+//02-custom-lighthouse.js
+//----------------------------
+//******* DESCRIPTION ********
+//----------------------------
+//[1]-Runs tests against URLs embedded in this script file
+//[2]-Only runs tests against preferred lighthouse (axe-core) rules that are
+//    the most Trusted Tester friendly.
+//
+//==================================================================
+
 const globby = require('globby');
 const protocolify = require('protocolify');
 const pkg = require('../package.json');
@@ -43,92 +55,69 @@ const urls = globby.sync(commander.args, {
 const config = {
 	urls: [
 
-		// Hard-code URLs for testing here
+		// Hard-code URLs for testing here. Note that if this script is run
+		// with a sitemap.xml switch, the URLs in this hard-coded list below
+		// will be added to the list of URLs cited in the sitemap.xml file for
+		// testing:
 
-		"https://section508coordinators.github.io/BaselineTestPages2/test-cases/TC1005C001.html",
-		"https://section508coordinators.github.io/BaselineTestPages2/test-cases/TC1005C002.html",
-		"https://section508coordinators.github.io/BaselineTestPages2/test-cases/TC1005C003.html",
-		"https://section508coordinators.github.io/BaselineTestPages2/test-cases/TC1005C004.html",
-		"https://section508coordinators.github.io/BaselineTestPages2/test-cases/TC1005C007.html"
+		"https://www.hhs.gov/az/a/index.html",
+		"https://www.hhs.gov/about/index.html",
+		"https://www.hhs.gov/programs/index.html",
+		"https://www.hhs.gov/regulations/index.html",
+		"https://www.hhs.gov/about/news/coronavirus/index.html",
+		"https://www.hhs.gov/opioids/",
+		"https://www.hhs.gov/surgeongeneral/reports-and-publications/tobacco/index.html",
+		"https://www.hhs.gov/healthcare/index.html",
+		"https://www.hhs.gov/grants/index.html",
+		"https://www.hhs.gov/health.gov/our-work/physical-activity"
+		],
 
-
-		// // First url requires login. The concept here is that a 'url' in this
-		// // list can either be a string url or a function that takes a
-		// // puppeteer browser that can be used to perform some actions before
-		// // returning the actual URL to run lighthouse against.
-		// async (puppet) => {
-		// 	// log into site before running tests and push the post login page onto
-		// 	const page = await puppet.newPage();
-		// 	await page.goto('http://testing-ground.scraping.pro/login');
-		// 	await page.waitForSelector('#usr', {visible: true});
-
-		// 	// Fill in and submit login form.
-		// 	const emailInput = await page.$('#usr');
-		// 	await emailInput.type('admin');
-		// 	const passwordInput = await page.$('#pwd');
-		// 	await passwordInput.type('12345');
-		// 	const submitButton = await page.$('input[type=submit]');
-
-		// 	await Promise.all([
-		// 		submitButton.click(),
-		// 		page.waitForNavigation(),
-		// 	]);
-
-		// 	if (page.url() != 'http://testing-ground.scraping.pro/login?mode=welcome') {
-		// 		console.error('login failed!');
-		// 	} else {
-		// 		console.log('login succeeded');
-		// 		const cookies = await page.cookies();
-		// 		for (var key in cookies) {
-		// 			console.log(`found cookie ${cookies[key].name}`);
-		// 		}
-		// 	}
-		// 	await page.close();
-
-		// 	return 'http://testing-ground.scraping.pro/login?mode=welcome';
-		// },
-		// 'http://testing-ground.scraping.pro/table'
-		// 'http://testing-ground.scraping.pro/blocks',
-		// 'http://testing-ground.scraping.pro/textlist',
-		// 'http://testing-ground.scraping.pro/invalid'
-	],
 	lighthouse: {
 		config: {
 			// desktop accessibility scan
 			extends: 'lighthouse:default',
 			settings: {
 				onlyCategories: ['accessibility'],
-				onlyAudits: [
-
-				//*** Cite the TTv5 friendly rules to be used for testing:
-				'aria-allowed-role',
-				'aria-hidden-focus',
-				'aria-input-field-name',
-				'aria-toggle-field-name',
-				'button-name',
-				'color-contrast',
-				'document-title',
-				'duplicate-id',
-				'empty-heading',
-				'form-field-multiple-labels',
-				'frame-title',
-				'frame-title-unique',
-				'html-has-lang',
-				'html-lang-valid',
-				'image-alt',
-				'input-button-name',
-				'input-image-alt',
-				'label',
-				'link-name',
-				'list',
-				'listitem',
-				'role-img-alt',
-				'scope-attr-valid',
-				'scrollable-region-focusable',
-				'td-headers-attr',
-				'valid-lang'
-				],
-
+				skipAudits: [
+					'accesskeys',
+					'aria-allowed-attr',
+					'aria-command-name',
+					'aria-hidden-body',
+					'aria-meter-name',
+					'aria-progressbar-name',
+					'aria-required-attr',
+					'aria-required-children',
+					'aria-required-parent',
+					'aria-roles',
+					'aria-toggle-field-name',
+					'aria-tooltip-name',
+					'aria-treeitem-name',
+					'aria-valid-attr',
+//					'aria-valid-attr-value',
+					'bypass',
+					'custom-controls-labels',
+					'custom-controls-roles',
+					'definition-list',
+					'dlitem',
+					'duplicate-id-active',
+					'duplicate-id-aria',
+					'focusable-controls',
+					'focus-traps',
+					'heading-order',
+					'interactive-element-affordance',
+					'logical-tab-order',
+					'managed-focus',
+					'meta-refresh',
+					'meta-viewport',
+					'object-alt',
+					'offscreen-content-hidden',
+					'tabindex',
+					'th-has-data-cells',
+					'use-landmarks',
+					'video-caption',
+					'visual-order-follows-dom'
+					],
+				
 				maxWaitForFcp: 15 * 1000,
 				maxWaitForLoad: 35 * 1000,
 				emulatedFormFactor: 'desktop',
@@ -147,24 +136,11 @@ const config = {
 		},
 		flags: {
 			port: null, // unknown till launch
-//			skipAudits: [
-//				'accesskeys', 'aria-allowed-attr', 'aria-required-attr', 'aria-required-children',
-//				'aria-required-parent', 'aria-roles', 'aria-valid-attr-value', 'aria-valid-attr',
-//				// 'audio-caption', 'button-name', 'bypass', 'color-contrast', 'definition-list',
-//				// 'dlitem', 'document-title', 'duplicate-id', 'frame-title', 'html-has-lang',
-//				'html-lang-valid', 'image-alt', 'input-image-alt', 'label', 'layout-table',
-//				'link-name', 'list', 'listitem', 'meta-refresh', 'meta-viewport', 'object-alt',
-//				'tabindex', 'td-headers-attr', 'th-has-data-cells', 'valid-lang', 'video-caption',
-//				'video-description', 'custom-controls-labels', 'custom-controls-roles',
-//				'focus-traps', 'focusable-controls', 'heading-levels',
-//				'interactive-element-affordance', 'logical-tab-order', 'managed-focus',
-//				'offscreen-content-hidden', 'use-landmarks', 'visual-order-follows-dom'
-//			],
+
 		}
 
 	}
 };
-
 
 // start from here and wait for results
 (async () => {
