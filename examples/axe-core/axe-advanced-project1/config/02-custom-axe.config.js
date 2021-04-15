@@ -1,22 +1,46 @@
+//
+//DATE: 03/21/2021
+//FILE: 02-custom-axe.config.js
+//AUTHOR: DHS OAST/ALAN KING
+//
+//------------------------------------------------------------------
+//********************** DESCRIPTION *******************************
+//------------------------------------------------------------------
+//[1]-Rules: Runs against preferred axe rules as identified below
+//
+//[2]-URL Source: Runs against internal embedded pages 
+//==================================================================
+
 const config = {
 	urls: [
 
-		// Hard-code URLs for testing here
-
-		"https://section508coordinators.github.io/BaselineTestPages2/test-cases/TC1005C001.html",
-		"https://section508coordinators.github.io/BaselineTestPages2/test-cases/TC1005C002.html",
-		"https://section508coordinators.github.io/BaselineTestPages2/test-cases/TC1005C003.html",
-		"https://section508coordinators.github.io/BaselineTestPages2/test-cases/TC1005C004.html",
-		"https://section508coordinators.github.io/BaselineTestPages2/test-cases/TC1005C007.html"
-		],
-		
+		// Ten (10) Hard-code URLs for testing here
+		"https://www.hhs.gov/az/a/index.html",
+		"https://www.hhs.gov/about/index.html",
+		"https://www.hhs.gov/programs/index.html",
+		"https://www.hhs.gov/regulations/index.html",
+		"https://www.hhs.gov/about/news/coronavirus/index.html",
+		"https://www.hhs.gov/opioids/",
+		"https://www.hhs.gov/surgeongeneral/reports-and-publications/tobacco/index.html",
+		"https://www.hhs.gov/healthcare/index.html",
+		"https://www.hhs.gov/grants/index.html",
+		"https://www.hhs.gov/health.gov/our-work/physical-activity"
+	
+ 		],
+/* you can use timeout: 0 to disabled timeout errors if you're loading a heavy page.
+		timeout: 0,
+*/
+	concurrency:10,
+	navigationOptions:{
+		timeout: 20000,
+	},
 	axeConfig: {
 
 		 rules: [
 
-		 	//********************************************
-		 	//*** START OF TTv5-Friendly and verified ****
-		 	//********************************************
+		 	//******************************************************
+		 	//*** START OF TTv5-Friendly and verified (axe 3.5) ****
+		 	//******************************************************
 			
 			{id: 'aria-allowed-role', enabled: true},
 			{id: 'aria-valid-attr-value', enabled: true},

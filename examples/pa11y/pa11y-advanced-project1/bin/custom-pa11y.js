@@ -7,7 +7,7 @@ const globby = require('globby');
 const protocolify = require('protocolify');
 const pkg = require('../package.json');
 const commander = require('commander');
-const { addLoggingInfo, addLoggingError } = require('../utils/winston');
+const { createWinstonLogger, addLoggingInfo, addLoggingError } = require('../utils/winston');
 
 commander
 	.version(pkg.version)
@@ -54,6 +54,11 @@ commander
 		'Use an alternate template for this analysis',
 		'config/index.handlebars'
 	)
+	.option(
+		'-l, --logs <Boolean>',
+		'Generate folder and log files',
+		'false'
+	)
 	.parse(process.argv);
 
 // Parse the args into valid paths using glob and protocolify
@@ -61,6 +66,8 @@ const urls = globby.sync(commander.args, {
 	// Ensure not-found paths (like "google.com"), are returned
 	nonull: true
 }).map(protocolify);
+
+createWinstonLogger((commander.opts().logs == 'true'));
 
 addLoggingInfo('Starting script');
 
@@ -85,7 +92,6 @@ const templateCustom = commander.opts().template;
 	// configuration urls and sitemap urls before command line urls
 	let allUrls = (newConfig.urls || []).concat(urls);
 
-	// Run pa11yCi
 	addLoggingInfo('Running pa11yCi...');
 	let runningStatus = null;
 	let report = null;

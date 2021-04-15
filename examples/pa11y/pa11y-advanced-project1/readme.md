@@ -25,7 +25,7 @@ This project is meant to demonstrate multiple ways in which developers can use a
 
 This tool allows the user to pick and choose the individual, underlying rules for testing. Not all automated tool rulesets on the market perfectly align with the pass/fail success criteria as expressed by the DHS standard. However upon analysis, DHS OAST has identified specific rules, for specific vendor accessibility ruleset libraries, that provide value in identifying accessibility to the DHS Standard.
 
-Those analyses of vendor accessibility rulesets and the OAST ruleset recommendations reside in [rulesets folder](/rulesets) on this site.
+Those analyses of vendor accessibility rulesets and the OAST ruleset recommendations reside in rulesets folder (/rulesets) on this site.
 
 ---
 
@@ -88,38 +88,72 @@ Options:
                                    default file: config/custom-axe.config.js
   -t, --template <string>          Use an alternate template for this analysis,
                                    default file: config/index.handlebars
+  -l, --logs <Boolean>,            Generate folder and log files,
+		                               default value: false'
 ```
+
+### If you want to change the timeout or the amount of concurrent tasks then change these options in custom-pa11y.config.js
+
+```
+defaults: {
+	concurrency:10,
+	timeout:10000,
+}
+```
+
+You can use timeout: 0 to disable timeout errors if you're loading a heavy page.
 
 ### Example implementation of switches
 
 In a git bash window, run the following command from the /bin/ directory:
 
-`node custom-pa11y.js --config config/custom-pa11y.config.js --template config/index.handlebars -h HTML_Report https://www.saga-it.com`
+`node custom-pa11y.js --config config/04-custom-pa11y.config --template config/index.handlebars -h HTML-Rpt-04 -s https://section508coordinators.github.io/Dev-Automation/sitemaps/test-sitemap.xml -x '.*(pdf|jpg|png)$'`
 
-This will run an accessibility test against a test web site of multiple web pages, with the configuration that is set with the **--config** option and using the template that is set with the **--template** option a folder will be created with the name "***HTML_Report***". Inside that folder will be index.html file of that report, it will display the test results and the score..
+This command will run an accessibility test against an external sitemap.xml file with 12 URLs, with the configuration that is set with the **--config** option and using the template that is set with the **--template** option and a folder will be created with the name "***HTML-Rpt-04***". This report will be saved to that named folder with an index.html file that indicates the first page of the report which displays the test results and a simple results score.
 
 ## Pre-configured examples
 
-The /bin/ directory contains multiple "custom-pa11y" files that showcase different features via their configuration settings as follows:
+The /config/ directory contains multiple files with different configurations in each file, showing different features through their configuration settings as follows. Use the **--config** option to select any .js file found inside the /config/ directory. The pre-configured examples are meant to make it clear how a single script template can be customized by providing multiple examples:
 
-- **Script 1 (01-custom-pa11y.js)**: 
-  Use the following syntax for this script:`node custom-pa11y.js --config config/01-custom-pa11y.config.js --template config/index.handlebars -h HTML_Report https://www.saga-it.com`This script presents the following:
-  - Uses the "runners:" option to specify the HTML CodeSniffer ruleset to use for testing. No rules are ignored, so testing is done using the full range of rules.
-- **Script 2 (02-custom-pa11y.js):** 
-  Use the following syntax for this script:`node custom-pa11y.js --config config/02-custom-pa11y.config.js --template config/index.handlebars -h HTML_Report https://www.saga-it.com`This script presents the following:
-  - Uses the "runners:" option to specify the axe-core ruleset to use for testing. No rules are ignored, so testing is done using the full range of rules.
-  - Uses the "urls:" option and tests against 1 URL that is hard-coded inside the script, as opposed to pointing to a sitemap file.
-- **Script 3 (03-custom-pa11y.js):** 
-  Use the following syntax for this script:`node custom-pa11y.js --config config/03-custom-pa11y.config.js --template config/index.handlebars -h HTML_Report https://www.saga-it.com`This script presents the following:
-  - Uses the "runners:" option to specify both the axe-core and HTML CodeSniffer rulesets to be used for testing. No rules are ignored, so testing is done using the full range of all rules from both rulesets.
-- **Script 4 (04-custom-pa11y.js):** 
-  Use the following syntax for this script:`node custom-pa11y.js --config config/04-custom-pa11y.config.js --template config/index.handlebars -h HTML_Report https://www.saga-it.com`This script presents the following:
-  - Uses the "runners:" option to specify both the axe-core and HTML CodeSniffer rulesets to be used for testing. 
-  - Uses the "ignore" option to specific rules to ignore for both rulesets specififed
+- ***Example 1: 01-custom-pa11y.js***
+
+  - Runs all default rules within the selected HTML Code Sniffer ruleset
+
+  - Runs against URLs embedded in the script
+
+  - Syntax: `node custom-pa11y.js --config config/01-custom-pa11y.config --template config/index.handlebars -h HTML-Rpt-01`
+
+    
+
+- ***Example 2: 02-custom-pa11y.js***
+
+  - Runs all default rules within the selected axe-core ruleset
+
+  - Runs against URLs embedded in the script
+
+  - Syntax: `node custom-pa11y.js --config config/02-custom-pa11y.config --template config/index.handlebars -h HTML-Rpt-02`
+
+    
+
+- ***Example 3: 03-custom-pa11y.js***
+
+  - Runs all default rules within the selected combination of both axe-core and HTML Code Sniffer rulesets
+
+  - Runs against URLs embedded in the script
+
+  - Syntax: `node custom-pa11y.js --config config/03-custom-pa11y.config --template config/index.handlebars -h HTML-Rpt-03`
+
+    
+
+- ***Example 4: 04-custom-pa11y.js***
+
+  - Runs against only preferred rules within the selected combination of both axe-core and HTML Code Sniffer rulesets
+  - Runs against URLs contained in an external sitemap.xml file
+  - Syntax: `node custom-pa11y.js --config config/04-custom-pa11y.config --template config/index.handlebars -h HTML-Rpt-04 -s https://section508coordinators.github.io/Dev-Automation/sitemaps/test-sitemap.xml -x '.*(pdf|jpg|png)$'`
 
 ## The syntax of the config files
 
-- **Urls**: urls can be a string or a function, functions would use in case the url needs authentication, functions take a browser puppeteer that can be used to perform certain actions before returning the url to run against axe.
+- **Urls**: Urls can be a string or a function. Functions would be used if accessing the url requires authentication. Functions use  *puppeteer* that can be used to perform certain actions before returning the url to run against.
 
   Login function example:
 
@@ -157,7 +191,7 @@ The /bin/ directory contains multiple "custom-pa11y" files that showcase differe
 		},
   ```
 
-- **defaults**: inside the axeConfig object the configuration is set up.
+- **defaults**: inside the pa11yConfig object the configuration is set up.
 
     - **ignore**: the rules to be ignored are added or modified.
 
@@ -174,4 +208,4 @@ For more information on syntax for using this custom example, see the pa11y-ci s
 
 ---
 
-03/06/2021 | 10:03p
+03/22/2021 | 03:32p

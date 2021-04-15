@@ -1,11 +1,38 @@
+//
+//DATE: 03/21/2021
+//FILE: 04-custom-axe.config.js
+//AUTHOR: DHS OAST/ALAN KING
+//
+//------------------------------------------------------------------
+//********************** DESCRIPTION *******************************
+//------------------------------------------------------------------
+//[1]-Rules: Depending on the switches you add to your node execution
+//           command, you can run against preferred axe rules by 
+//           leaving the "Rules" setting below configured as is, or you
+//           can remove the settings below and run against all rules 
+//
+//[2]-URL Source: Depending on the switches you add to your node execution
+//                command, you can populate the urls: setting below with
+//                URLs you want to run agains, or you can leave that
+//                section empty as it is and instead use the -s switch
+//                on your node command to point to an external sitemap.xml
+//                file containing URLs to run against.
+//==================================================================
+
 const config = {
 	urls: [
-
-		],
+	
+ 		],
+/* you can use timeout: 0 to disabled timeout errors if you're loading a heavy page.
+		timeout: 0,
+*/
+	concurrency:10,
+	navigationOptions:{
+		timeout: 20000,
+	},
 	axeConfig: {
 
 		 rules: [
-
 		 	//********************************************
 		 	//*** START OF TTv5-Friendly and verified ****
 		 	//********************************************

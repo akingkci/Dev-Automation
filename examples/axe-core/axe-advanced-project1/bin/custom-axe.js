@@ -11,8 +11,7 @@ const pkg = require('../package.json');
 const globby = require('globby');
 const protocolify = require('protocolify');
 const commander = require('commander');
-const { addLoggingInfo, addLoggingError } = require('../utils/winston');
-
+const { createWinstonLogger, addLoggingInfo, addLoggingError } = require('../utils/winston');
 const fs = require('fs');
 
 commander
@@ -45,6 +44,11 @@ commander
 		'Use an alternate template for this analysis',
 		'config/index.handlebars'
 	)
+	.option(
+		'-l, --logs <Boolean>',
+		'Generate folder and log files',
+		'false'
+	)
 	.requiredOption(
 		'-h, --html-report <dir>',
 		'Takes json output and uses pa11y-ci-reporter-html to generate a report in <dir>'
@@ -52,6 +56,8 @@ commander
 
 // Parse the args into valid paths using glob and protocolify
 let commandLineUrls = globby.sync(commander.args, {nonull: true}).map(protocolify);
+
+createWinstonLogger((commander.opts().logs == 'true'));
 
 addLoggingInfo('Starting script');
 
@@ -80,7 +86,7 @@ const main = async () => {
 
 	addLoggingInfo('Scanning urls');
 
-	const results = await customAxe.scanUrls(config.urls, config.axeConfig);
+	const results = await customAxe.scanUrls(config);
 
 	addLoggingInfo('Converting the results of the axe into a report compatible with Pa11y');
 

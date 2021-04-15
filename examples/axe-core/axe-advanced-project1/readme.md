@@ -26,23 +26,28 @@ By combining the axe-core API library with the underlying [Pa11y test engine](ht
 
 This tool allows the user to pick and choose the individual, underlying rules for testing. Not all automated tool rulesets on the market perfectly align with the pass/fail success criteria as expressed by the DHS standard. However upon analysis, DHS OAST has identified specific rules, for specific vendor accessibility ruleset libraries, that provide value in identifying accessibility to the DHS Standard.
 
-Those analyses of vendor accessibility rulesets and the OAST ruleset recommendations reside in [rulesets folder](/rulesets) on this site.
+Those analyses of vendor accessibility rulesets and the OAST ruleset recommendations reside in rulesets folder (/rulesets) on this site.
 
 ---
 
 ## Technology requirements
 
-This example uses the following technology stack:
+Below are the core dependencies. See [this page](axe-dependency-map.md) for a mapping of all dependencies associated with this example.
 
-- Nodejs 6+
+- NodeJs 6+
 - Git
-- axe-Puppeteer
-- Commander
-- Globby
-- pa11y-ci-reporter-html
-- protocolify
-- puppeteer
-- sitemapper
+- @types/async 3.2.5: (https://www.npmjs.com/package/@types/async)
+- async 3.2.0: (https://www.npmjs.com/package/async)
+- axe-puppeteer 1.0.0 (https://www.npmjs.com/package/@axe-core/pupeeteer)
+- commander 5.0.0: (https://www.npmjs.com/package/commander)
+- globby 6.1.0: (https://www.npmjs.com/package/globby)
+- pa11y-ci-reporter-html 2.0.1: (https://www.npmjs.com/package/pa11y-ci-reporter-html)
+- protocolify 3.0.0: (https://www.npmjs.com/package/protocolify)
+- puppeteer 2.1.1: (https://www.npmjs.com/package/puppeteer)
+- sitemapper: 3.0.5 (https://www.npmjs.com/package/sitemapper)
+- winston: 3.3.3 (https://www.npmjs.com/package/winston)
+- winston-daily-rotate-file 4.5.0: (https://www.npmjs.com/package/winston-daily-rotate-file)
+- typescript 3.8.3: (https://www.npmjs.com/package/typescript)
 
 ---
 
@@ -64,43 +69,88 @@ Project1 can be used by running it as a command line tool, `custom-axe` from the
 Usage: node custom-axe.js [options] <paths>
 
 Options:
-  -V, --version                    output the version number
-  -s, --sitemap <url>              the path to a sitemap
-  -f, --sitemap-find <pattern>     a pattern to find in sitemaps. Use with
+  	-V, --version                    output the version number
+  	-s, --sitemap <url>              the path to a sitemap
+	-f, --sitemap-find <pattern>     a pattern to find in sitemaps. Use with
                                    --sitemap-replace
-  -r, --sitemap-replace <string>   a replacement to apply in sitemaps. Use with
+	-r, --sitemap-replace <string>   a replacement to apply in sitemaps. Use with
                                    --sitemap-find
-  -x, --sitemap-exclude <pattern>  a pattern to find in sitemaps and exclude
+	-x, --sitemap-exclude <pattern>  a pattern to find in sitemaps and exclude
                                    any url that matches
-  -h, --html-report <dir>          Takes json output and uses
+	-h, --html-report <dir>          Takes json output and uses
                                    pa11y-ci-reporter-html to generate a report
                                    in <dir>
-  -h, --help                       display help for command
-  -c, --config <string>            Use an alternate configuration for this analysis,
+	-h, --help                       display help for command
+	-c, --config <string>            Use an alternate configuration for this analysis,
                                    default file: config/custom-axe.config.js
-  -t, --template <string>          Use an alternate template for this analysis,
+	-t, --template <string>          Use an alternate template for this analysis,
                                    default file: config/index.handlebars
+	-l, --logs <Boolean>,            Generate folder and log files,
+		                               default value: false'								   
 ```
+
+### If you want to change the timeout or the amount of concurrent tasks then change these options in custom-axe.config.js 
+
+    concurrency:10,
+    navigationOptions:{
+    	timeout: 10000,
+    },
+
+
+you can use timeout: 0 to disabled timeout errors if you're loading a heavy page.
+
 
 ### Example implementation of switches
 
 In a git bash window, run the following command from the /bin/ directory:
 
-`node custom-axe.js --config config/custom-axe.config.js --template config/index.handlebars -h HTML_Report https://www.saga-it.com`
+`node custom-axe.js --config config/04-custom-axe.config --template config/index.handlebars -h HTML-Rpt-04 -s https://section508coordinators.github.io/Dev-Automation/sitemaps/test-sitemap.xml -x '.*(pdf|jpg|png)$'`
 
-This will run an accessibility test against a test web site of multiple web pages, with the configuration that is set with the **--config** option and using the template that is set with the **--template** option a folder will be created with the name "***HTML_Report***". Inside that folder will be index.html file of that report, it will display the test results and the score.
+This command will run an accessibility test against an external sitemap.xml file with 12 URLs, with the configuration that is set with the **--config** option and using the template that is set with the **--template** option a folder will be created with the name "***HTML-Rpt-04***". This report will be saved to that named folder with an index.html file that indicates the first page of the report which displays the test results and a simple results score.
 
 ## Pre-configured examples
 
-The /config/ directory contains multiple files with different configurations in each file, which show different features through their configuration settings as follows. Use the **--config** option to select any .js file found inside the /config/ directory:
+The /config/ directory contains multiple files with different configurations in each file, showing different features through their configuration settings as follows. Use the **--config** option to select any .js file found inside the /config/ directory. The pre-configured examples are meant to make it clear how a single script template can be customized by providing multiple examples:
 
-- **Run all axe rules when testing**: 01-custom-axe.js.
+- ***Example 1: 01-custom-axe.js***
 
-- **Run only certain rules that are TTv5 friendly**: 02-custom-axe.js
+  - Runs against all default axe-core rules
+
+  - Runs against URLs embedded in the script
+
+  - Syntax: `node custom-axe.js --config config/01-custom-axe.config --template config/index.handlebars -h HTML-Rpt-01`
+
+    
+
+- ***Example 2: 02-custom-axe.js***
+
+  - Runs against only preferred axe-core rules
+
+  - Runs against URLs embedded in the script
+
+  - Syntax: `node custom-axe.js --config config/02-custom-axe.config --template config/index.handlebars -h HTML-Rpt-02`
+
+    
+
+- ***Example 3: 03-custom-axe.js***
+
+  - Runs against all default axe-core rules
+
+  - Runs against URLs identified in an external sitemap.xml file
+
+  - Syntax:  `node custom-axe.js --config config/03-custom-axe.config --template config/index.handlebars -h HTML-Rpt-03 -s http://section508coordinators.github.io/Dev-Automation/sitemaps/test-sitemap.xml -x '.*(pdf|jpg|png)$'`
+
+    
+
+- ***Example 4: 04-custom-axe.js***
+
+  - Runs against only preferred axe-core rules
+  - Runs against URLs identified in an external sitemap.xml file
+  - Syntax: `node custom-axe.js --config config/04-custom-axe.config --template config/index.handlebars -h HTML-Rpt-04 -s http://section508coordinators.github.io/Dev-Automation/sitemaps/test-sitemap.xml -x '.*(pdf|jpg|png)$'`
 
 ## The syntax of the config files
 
-- **Urls**: urls can be a string or a function, functions would use in case the url needs authentication, functions take a browser puppeteer that can be used to perform certain actions before returning the url to run against axe.
+- **Urls**: Urls can be a string or a function. Functions would be used if accessing the url requires authentication. Functions use  *puppeteer* that can be used to perform certain actions before returning the url to run against.
 
   Login function example:
 
@@ -164,6 +214,6 @@ More comprehensive guidance on the axe-core engine can be found in the [Axe Java
 
 ---
 
-03/06/2021 | 09:46p
+04/15/2021 | 11:26a
 
 

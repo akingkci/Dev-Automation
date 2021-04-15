@@ -24,7 +24,7 @@ This project is meant to demonstrate multiple ways in which developers can use a
 
 This tool allows the user to pick and choose the individual, underlying rules for testing. Not all automated tool rulesets on the market perfectly align with the pass/fail success criteria as expressed by the DHS standard. However upon analysis, DHS OAST has identified specific rules, for specific vendor accessibility ruleset libraries, that provide value in identifying accessibility to the DHS Standard.
 
-Those analyses of vendor accessibility rulesets and the OAST ruleset recommendations reside in [rulesets folder](/rulesets) on this site.
+Those analyses of vendor accessibility rulesets and the OAST ruleset recommendations reside in rulesets folder (/rulesets) on this site.
 
 #### Lighthouse and axe-core rulesets
 
@@ -35,9 +35,9 @@ Note that Deque axe-core open-source rules are the underlying rules for lighthou
 To see the axe-core rules exposed via Lighthouse testing:
 
 - Issue the command: `lighthouse --list-all-audits` and then note all listings with a preface of "**accessibility/**".
-- Reference the Lighthouse section of the [rulesets folder](/rulesets) on this site for a listing of those rules.
+- Reference the Lighthouse section of the rulesets folder on this site for a listing of those rules.
 
-To access the full range of axe-core rules, use the the [axe-core test tools](/examples/axe-core/) on this site.
+To access the full range of axe-core rules, use the the axe-core test tools on this site.
 
 ---
 
@@ -45,19 +45,37 @@ To access the full range of axe-core rules, use the the [axe-core test tools](/e
 
 This example uses the following technology stack:
 
-- Chrome desktop
-- Nodejs 12+
+- Chrome Desktop
+
+- NodeJs 12+
+
 - Git
-- cheerio
-- Commander
-- Globby
-- handlebars
-- lighthouse
-- axe-core
-- node-fetch
-- protocolify
-- puppeteer
-- typescript
+
+- cheerio 1.0.0-rc.3: (https://www.npmjs.com/package/cheerio)
+
+- commander 5.0.0: (https://www.npmjs.com/package/commander)
+
+- globby 6.1.0: (https://www.npmjs.com/package/globby)
+
+- handlebars 4.7.3: (https://www.npmjs.com/package/handlebars)
+
+- lighthouse 7.0.0: (https://www.npmjs.com/package/lighthouse)
+
+- node-fetch 2.6.0: (https://www.npmjs.com/package/node-fetch)
+
+- protocolify 2.0.0: (https://www.npmjs.com/package/protocolify)
+
+- puppeteer 2.1.1: (https://www.npmjs.com/package/puppeteer)
+
+- typescript 3.8.3: (https://www.npmjs.com/package/typescript)
+
+- winston: 3.3.3: (https://www.npmjs.com/package/winston)
+
+- winston-daily-rotate-file 4.5.0: (https://www.npmjs.com/package/winston-daily-rotate-file)
+
+- eslint 6.8.0: (https://www.npmjs.com/package/eslint)
+
+  
 
 
 ---
@@ -97,32 +115,41 @@ Options:
                                    default file: config/custom-axe.config.js
   -t, --template <string>          Use an alternate template for this analysis,
                                    default file: config/index.handlebars
+  -l, --logs <Boolean>,            Generate folder and log files,
+		                               default value: false'
 ```
 
 ### Example implementation of switches
 
 In a git bash window, run the following command from the /bin/ directory:
 
-`node custom-lighthouse.js --config config/01-custom-lighthouse.config.js --template config/index.handlebars -h HTML_Report https://www.saga-it.com`
+`node custom-lighthouse.js --config config/04-custom-lighthouse.config --template config/index.handlebars -h HTML-Rpt-04 -s http://section508coordinators.github.io/Dev-Automation/sitemaps/test-sitemap.xml -x '.*(pdf|jpg|png)$'`
 
-This will run an accessibility test against a test web site of multiple web pages, with the configuration that is set with the **--config** option and using the template that is set with the **--template** option a folder will be created with the name "***HTML_Report***". Inside that folder will be index.html file of that report, it will display the test results and the score.
+This command will run an accessibility test against an external sitemap.xml file with 12 URLs, with the configuration that is set with the **--config** option and using the template that is set with the **--template** option and a folder will be created with the name "***HTML-Rpt-04***". This report will be saved to that named folder with an index.html file that indicates the first page of the report which displays the test results and a simple results score.
 
 ## Pre-configured examples
 
 The /config/ directory contains multiple files with different configurations in each file, which show different features through their configuration settings as follows. Use the **--config** option to select any .js file found inside the /config/ directory:
 
-- **Script 1 (01-custom-lighthouse.js)**: 
-  Use the following syntax for this script:`node custom-lighthouse.js --config config/01-custom-lighthouse.config.js --template config/index.handlebars -h HTML_Report https://www.saga-it.com'`This script presents the following:
-  - Uses the "urls:" option and tests against 5 URLs that are hard-coded inside the script, as opposed to pointing to a sitemap file.
+- ***Example 1: 01-custom-lighthouse.js***
+
+  - Uses the "urls:" option and tests against 10 URLs that are hard-coded inside the script, as opposed to pointing to a sitemap file.
+    
   - Does not constrain rules and therefore runs against all axe-core rules lighthouse runs by default.
-- **Script 2 (02-custom-lighthouse.js):** 
-  Use the following syntax for this script:`node custom-lighthouse.js --config config/02-custom-lighthouse.config.js --template config/index.handlebars -h HTML_Report https://www.saga-it.com`This script presents the following:
-  - Uses the "runners:" option to specify the axe-core ruleset to use for testing. No rules are ignored, so testing is done using the full range of rules.
-  - Instead of using all axe-core rules, uses the "onlyAudits:" option to specify rules to use for testing
+
+  - Syntax: `node custom-lighthouse.js --config config/01-custom-lighthouse.config.js --template config/index.handlebars -h HTML-Rpt-01` 
+
+    
+
+- ***Example 2: 02-custom-lighthouse.js***
+
+  - Uses the "urls:" option and tests against 10 URLs that are hard-coded inside the script, as opposed to pointing to a sitemap file.
+  - Instead of using all axe-core rules, uses the "skipAudits:" option to specify "TTv5 unfriendly" rules *to exclude* from testing
+  - Syntax: `node custom-lighthouse.js --config config/02-custom-lighthouse.config.js --template config/index.handlebars -h HTML-Rpt-02`
 
 ## The syntax of the config files
 
-- **Urls**: urls can be a string or a function, functions would use in case the url needs authentication, functions take a browser puppeteer that can be used to perform certain actions before returning the url to run against axe.
+- **Urls**: Urls can be a string or a function, functions would use in case the url needs authentication, functions take a browser puppeteer that can be used to perform certain actions before returning the url to run against axe.
 
   Login function example:
 
@@ -162,9 +189,9 @@ The /config/ directory contains multiple files with different configurations in 
 
 - **lighthouse**: inside the lighthouse object the configuration is set up.
 
-    - **onlyAudits**: within the config object, the settings object is located and within this object is the **onlyAudits ** field, in  this field you can add or modify the audits.
+    - **onlyCategories**: Within the config object, this setting ensures rules that are analyzed are limited to the ones within the specific category (['accessibility']) selected and other rules are not included.
 
-    - **skipAudits**: inside the flag object, inside this object there is the **skipAudits ** field, in this field you can add or modify the audits you want to skip.
+    - **skipAudits**: Within the config object, this setting allows you to exclude rules from testing that are normally included in the category selected.
 
 ## Configure the handlebars templates
 
@@ -180,5 +207,5 @@ For more information on lighthouse syntax, go here: https://github.com/GoogleChr
 
 ---
 
-03/06/2021 | 09:55p
+04/15/2021 | 11:40a
 

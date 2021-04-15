@@ -19,7 +19,7 @@ const pkg = require('../package.json');
 const commander = require('commander');
 const customLighthouse = require('..');
 const lighthouseConstants = require('lighthouse/lighthouse-core/config/constants.js');
-const { addLoggingInfo, addLoggingError } = require('../utils/winston');
+const { createWinstonLogger, addLoggingInfo, addLoggingError } = require('../utils/winston');
 
 commander
 	.version(pkg.version)
@@ -51,6 +51,11 @@ commander
 		'Use an alternate template for this analysis',
 		'config/index.handlebars'
 	)
+	.option(
+		'-l, --logs <Boolean>',
+		'Generate folder and log files',
+		'false'
+	)
 	.requiredOption(
 		'-h, --html-report <dir>',
 		'Output directory for lighthouse reports'
@@ -62,6 +67,8 @@ const urls = globby.sync(commander.args, {
 	// Ensure not-found paths (like "google.com"), are returned
 	nonull: true
 }).map(protocolify);
+
+createWinstonLogger((commander.opts().logs == 'true'));
 
 addLoggingInfo('Starting script');
 

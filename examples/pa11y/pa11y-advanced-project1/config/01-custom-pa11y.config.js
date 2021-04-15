@@ -14,7 +14,7 @@ const config = {
 		"https://www.hhs.gov/healthcare/index.html",
 		"https://www.hhs.gov/grants/index.html",
 		"https://www.hhs.gov/health.gov/our-work/physical-activity"
-		],
+	],
 
 	defaults: {
 		log: (commander.json || commander.htmlReport) ? undefined : console,
@@ -25,12 +25,10 @@ const config = {
 
 		ignore: [
 
-			],  
+			], 
 		runners: [
 			'htmlcs'
-		] 
-
-
+		]
 	}
 };
 

@@ -194,12 +194,9 @@ When using the pa11y engine tools, the developer/tester indicates the desired ru
 | WCAG2AA.Principle1.Guideline1_1.1_1_1.H37                 | 2.5.1        |
 | WCAG2AA.Principle4.Guideline4_1.4_1_2.H91.A.NoContent     | 2.5.1        |
 | WCAG2AA.Principle2.Guideline2_4.2_4_1.G1G123G124.NoSuchID | 2.5.1        |
-| WCAG2AA.Principle1.Guideline1_3.1_3_1.H42.2               | 2.5.1        |
-| WCAG2AA.Principle2.Guideline2_4.2_4_1.H64.1               | 2.5.1        |
-
 
 
 <hr>
 
-02/15/2021 | 03:17:p
+03/19/2021 | 05:43:p
 

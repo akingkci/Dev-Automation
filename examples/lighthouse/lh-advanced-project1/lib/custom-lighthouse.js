@@ -10,7 +10,7 @@ const fetch = require('node-fetch');
 const handlebars = require('handlebars');
 const path = require('path');
 const cheerio = require('cheerio');
-const { addLoggingInfo } = require('../utils/winston');
+const { addLoggingInfo, addLoggingError } = require('../utils/winston');
 
 const scanUrl = async (puppet, url, options) => {
 	// if the url is actually a function then we'll call it
@@ -19,12 +19,17 @@ const scanUrl = async (puppet, url, options) => {
 	if (typeof url == 'function') {
 		url = await (url)(puppet);
 	}
+
+ 	// console.log(report);
+ 	//console.log(`Lighthouse scores: ${Object.values(lhr.categories).map(c => `${c.title} ${c.score}`).join(', ')}`);
+
 	addLoggingInfo(`Browsing to URL: ${url}`)
 	addLoggingInfo(`Analyzing URL: ${url}`)
 	const {lhr, report} = await lighthouse(url, options.flags, options.config);
+	addLoggingInfo(`Successful analysis of URL: ${url}`)
 	// console.log(report);
 	//console.log(`Lighthouse scores: ${Object.values(lhr.categories).map(c => `${c.title} ${c.score}`).join(', ')}`);
-	addLoggingInfo(`Successful analysis of URL: ${url}`)
+	//console.log(lhr);
 	return lhr;
 }
 
@@ -60,12 +65,16 @@ const scanUrlsFn = async (puppet, options, urls) => {
 
 	for (var i = 0; i < urls.length; i++) {
 		// Run Lighthouse.
-		const lhr = await scanUrl(puppet, urls[i], options);
-		// console.log(report);
-
-		//console.log(`Lighthouse scores: ${Object.values(lhr.categories).map(c => `${c.title} ${c.score}`).join(', ')}`);
-		const html = ReportGenerator.generateReport(lhr, 'html');
-		results.push({lhr, html});
+		try {			
+			const lhr = await scanUrl(puppet, urls[i], options);
+			// console.log(report);
+	
+			//console.log(`Lighthouse scores: ${Object.values(lhr.categories).map(c => `${c.title} ${c.score}`).join(', ')}`);
+			const html = ReportGenerator.generateReport(lhr, 'html');
+			results.push({lhr, html});
+		} catch (error) {
+			addLoggingError(error.name + ' in url: '+ urls[i])
+		}
 	}
 	return results;
 };

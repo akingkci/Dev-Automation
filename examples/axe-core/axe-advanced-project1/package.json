@@ -17,10 +17,12 @@
   },
   "main": "./lib/custom-axe.js",
   "bin": {
-    "custom-axe": "./bin/custom-axe.js"
+    "custom-axe": "bin/custom-axe.js"
   },
   "scripts": {},
   "dependencies": {
+    "@types/async": "^3.2.5",
+    "async": "^3.2.0",
     "axe-puppeteer": "^1.0.0",
     "commander": "^5.0.0",
     "globby": "^6.1.0",
