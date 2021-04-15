@@ -1,4 +1,4 @@
-## Axe-core Advanced example full dependency map
+Axe-advanced project1 full dependencies mapping:
 
 
 
